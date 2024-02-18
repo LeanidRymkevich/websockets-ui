@@ -1,3 +1,3 @@
-export interface IHTTPServer {
+export default interface IHTTPServer {
   start: () => void;
 }
