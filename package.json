@@ -4,14 +4,15 @@
     "description": "Template for the WebSocket remote control task",
     "main": "index.ts",
     "scripts": {
-        "start": "tsx ./index.ts",
-        "start:dev": "tsx watch ./index.ts"
+        "start": "tsx ./src/index.ts",
+        "start:dev": "tsx watch ./src/index.ts"
     },
     "author": "Andrei Auchynnikau",
     "keywords": [],
     "license": "ISC",
     "devDependencies": {
         "@types/node": "^20.11.17",
+        "@types/ws": "^8.5.10",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
         "@typescript-eslint/parser": "^6.21.0",
         "eslint": "^8.56.0",
