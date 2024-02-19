@@ -15,7 +15,7 @@ export default class HTTPServer implements IHTTPServer {
   private readonly port: number;
   private readonly server: Server;
 
-  constructor(port: number) {
+  public constructor(port: number) {
     this.port = port;
     this.server = this.initialize();
     this.server.on('error', this.onError);

@@ -15,7 +15,7 @@ export default class WSServer {
   private readonly server: Server;
   private readonly socketMap: Record<string, WebSocket> = {};
 
-  constructor(port: number) {
+  public constructor(port: number) {
     this.port = port;
     this.server = this.initialize();
     this.server.on('connection', this.onConnection);

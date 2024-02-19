@@ -9,13 +9,9 @@ import CommonController from '@src/controllers/CommonController';
 import IData from '@src/types/interfaces/IData';
 import { parseRawData } from '@src/utils/data_parser';
 import ITypedController from '@src/types/interfaces/ITypedController';
-import AbstractController from '@src/controllers/AbstractController';
 import { extractErrorMsg } from '@src/utils/error_util';
 
-export default class Controller
-  extends AbstractController
-  implements IController
-{
+export default class Controller implements IController {
   public static readonly instance: IController = new Controller();
 
   private readonly commands: Record<ERespType, ITypedController> = {
@@ -24,9 +20,7 @@ export default class Controller
     [ERespType.COMMON]: new CommonController(),
   };
 
-  private constructor() {
-    super();
-  }
+  private constructor() {}
 
   public static getInstance = (): IController => this.instance;
 
@@ -37,8 +31,7 @@ export default class Controller
   ): void => {
     const parsedData: IData = parseRawData(data);
     const controllerName: string | undefined = this.findCommand(
-      parsedData.type,
-      this.commands
+      parsedData.type
     );
 
     try {
@@ -57,5 +50,11 @@ export default class Controller
       if (!socket) return;
       socket.send(JSON.stringify({ error: true, errorText: msg }));
     }
+  };
+
+  private findCommand = (commandName: string): string | undefined => {
+    return Object.keys(this.commands).find((key: string): boolean =>
+      this.commands[key as ERespType].haveCommand(commandName)
+    );
   };
 }

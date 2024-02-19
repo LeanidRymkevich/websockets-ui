@@ -8,4 +8,6 @@ export default interface ITypedController {
     socketMap: Record<string, WebSocket>,
     socketId: string
   ): void;
+
+  haveCommand(commandName: string): boolean;
 }

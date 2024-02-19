@@ -1,8 +1,14 @@
-export default abstract class AbstractController {
-  protected findCommand = <K>(
-    command: string,
-    map: Record<string | number | symbol, K>
-  ): string | undefined => {
-    return Object.keys(map).find((name: string) => name === command);
+export default abstract class AbstractController<
+  T extends string | number | symbol,
+  K,
+> {
+  protected readonly commands: Record<T, K>;
+
+  constructor(commands: Record<T, K>) {
+    this.commands = commands;
+  }
+
+  public haveCommand = (commandName: string): boolean => {
+    return Object.keys(this.commands).includes(commandName);
   };
 }
