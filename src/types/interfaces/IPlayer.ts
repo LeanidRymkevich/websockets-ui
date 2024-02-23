@@ -1,8 +1,7 @@
 import WebSocket from 'ws';
+import { IRegData } from './IRegData';
 
-export interface IPlayer {
-  readonly login: string;
-  readonly password: string;
+export interface IPlayer extends IRegData {
   readonly index: string;
   readonly socket: WebSocket;
 }

@@ -1,5 +1,4 @@
 import WebSocket, { Server, RawData } from 'ws';
-import { randomUUID } from 'crypto';
 
 import {
   printWssStartMsg,
@@ -13,7 +12,7 @@ import Controller from '@src/controllers/Controller';
 export default class WSServer {
   private readonly port: number;
   private readonly server: Server;
-  private readonly socketMap: Record<string, WebSocket> = {};
+  private socketCounter: number = 0;
 
   public constructor(port: number) {
     this.port = port;
@@ -28,21 +27,18 @@ export default class WSServer {
   };
 
   private onConnection = (socket: WebSocket): void => {
-    const id: string = randomUUID();
-    this.socketMap[id] = socket;
-
-    printNewSocketMsg(id);
+    printNewSocketMsg(++this.socketCounter);
 
     socket.on('message', (data: RawData): void => {
-      Controller.getInstance().execute(data, this.socketMap, id);
+      Controller.getInstance().execute(data, socket);
     });
 
     socket.on('close', (): void => {
-      printCloseSocketMsg(id);
+      printCloseSocketMsg(--this.socketCounter);
       socket.close();
     });
     socket.on('error', (error: Error): void => {
-      printErrorSocketMsg(id, error);
+      printErrorSocketMsg(--this.socketCounter, error);
       socket.close();
     });
   };
