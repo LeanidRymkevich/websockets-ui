@@ -12,7 +12,7 @@ import ITypedController from '@src/types/interfaces/ITypedController';
 import { extractErrorMsg } from '@src/utils/error_util';
 
 export default class Controller implements IController {
-  public static readonly instance: IController = new Controller();
+  private static readonly instance: IController = new Controller();
 
   private readonly commands: Record<ERespType, ITypedController> = {
     [ERespType.PERSONAL]: new PersonalController(),

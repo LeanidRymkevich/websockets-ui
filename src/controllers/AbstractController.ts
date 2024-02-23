@@ -4,7 +4,7 @@ export default abstract class AbstractController<
 > {
   protected readonly commands: Record<T, K>;
 
-  constructor(commands: Record<T, K>) {
+  public constructor(commands: Record<T, K>) {
     this.commands = commands;
   }
 
