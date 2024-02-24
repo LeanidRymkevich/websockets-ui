@@ -1,18 +1,20 @@
-import { WebSocket } from 'ws';
-
 import { IPlayerParams } from '@src/types/types';
-import { IPlayer } from '@src/types/interfaces/IPlayer';
+import IPlayer from '@src/types/interfaces/IPlayer';
 
 export default class Player implements IPlayer {
   public readonly name: string;
   public readonly password: string;
   public readonly index: string;
-  public readonly socket: WebSocket;
+
+  private socketId: string;
 
   public constructor(params: IPlayerParams, index: string) {
     this.index = index;
     this.name = params.name;
     this.password = params.password;
-    this.socket = params.socket;
+    this.socketId = params.socketId;
   }
+
+  public getSocketId = (): string => this.socketId;
+  public changeSocketId = (id: string): string => (this.socketId = id);
 }

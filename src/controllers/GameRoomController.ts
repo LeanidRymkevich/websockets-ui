@@ -29,7 +29,11 @@ export default class GameRoomController
     super(commands);
   }
 
-  public execute = (data: IData, socket: WebSocket): void => {
-    this.commands[data.type as EGameRoomRespTypes](data, socket);
+  public execute = (
+    data: IData,
+    socketMap: Record<string, WebSocket>,
+    socketId: string
+  ): void => {
+    this.commands[data.type as EGameRoomRespTypes](data, socketMap, socketId);
   };
 }

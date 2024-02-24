@@ -16,19 +16,18 @@ const printWssErrorMsg = (port: number, error: Error): void => {
   console.log(`Close web socket server on on the ${port} port!\n`);
 };
 
-const printNewSocketMsg = (socketNum: number): void => {
-  console.log('New socket connection!');
-  console.log(`Total amount of sockets: ${socketNum}.\n`);
+const printNewSocketMsg = (id: string): void => {
+  console.log(`New socket connected.ID ${id}\n`);
 };
 
-const printCloseSocketMsg = (socketNum: number): void => {
-  console.log('Socket was closed!');
-  console.log(`Total amount of sockets: ${socketNum}.\n`);
+const printCloseSocketMsg = (id: string): void => {
+  console.log(`Socket with ID ${id} was closed.\n`);
 };
 
-const printErrorSocketMsg = (socketNum: number, error: Error): void => {
-  console.log(`Error in socket: ${error.message || 'unknown error'}.`);
-  console.log(`Total amount of sockets: ${socketNum}.\n`);
+const printErrorSocketMsg = (id: string, error: Error): void => {
+  console.log(
+    `Error in socket with ID ${id}: ${error.message || 'unknown error'}.\n`
+  );
 };
 
 const reportOperationRes = (operation: string, result: unknown): void => {

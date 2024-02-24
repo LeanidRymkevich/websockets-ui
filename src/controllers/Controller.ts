@@ -24,7 +24,11 @@ export default class Controller implements IController {
 
   public static getInstance = (): IController => this.instance;
 
-  public execute = (data: RawData, socket: WebSocket): void => {
+  public execute = (
+    data: RawData,
+    socketMap: Record<string, WebSocket>,
+    socketId: string
+  ): void => {
     try {
       const parsedData: IData = parseRawData(data);
       const controllerName: string | undefined = this.findCommand(
@@ -34,10 +38,17 @@ export default class Controller implements IController {
       if (!controllerName)
         throw new Error(`Command type '${parsedData.type}' doesn't exists!`);
 
-      this.commands[controllerName as ERespType].execute(parsedData, socket);
+      this.commands[controllerName as ERespType].execute(
+        parsedData,
+        socketMap,
+        socketId
+      );
     } catch (err) {
       const msg = extractErrorMsg(err, 'unknown error');
       const response = { error: true, errorText: msg };
+      const socket = socketMap[socketId];
+
+      if (!socket) return;
 
       reportOperationRes('Data parsing and searching for command', response);
       socket.send(JSON.stringify(response));

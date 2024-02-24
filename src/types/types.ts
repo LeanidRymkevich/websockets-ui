@@ -1,9 +1,13 @@
 import WebSocket from 'ws';
 
 import IData from '@src/types/interfaces/IData';
-import { IPlayer } from '@src/types/interfaces/IPlayer';
+import IPlayer from '@src/types/interfaces/IPlayer';
 
-type IPlayerParams = Pick<IPlayer, 'name' | 'password' | 'socket'>;
-type TypedCommand = (data: IData, socket: WebSocket) => void;
+type IPlayerParams = Pick<IPlayer, 'name' | 'password'> & { socketId: string };
+type TypedCommand = (
+  data: IData,
+  socketMap: Record<string, WebSocket>,
+  socketId: string
+) => void;
 
 export { IPlayerParams, TypedCommand };

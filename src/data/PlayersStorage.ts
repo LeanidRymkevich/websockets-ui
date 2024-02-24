@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-import { IPlayer } from '@src/types/interfaces/IPlayer';
+import IPlayer from '@src/types/interfaces/IPlayer';
 import { IPlayerParams } from '@src/types/types';
 import IPlayersStorage from '@src/types/interfaces/IPlayersStorage';
 
@@ -21,6 +21,8 @@ export default class PlayersStorage implements IPlayersStorage {
       const player: IPlayer = new Player(playerParams, index);
       this.storage[index] = player;
       return player;
+    } else {
+      existingPlayer.changeSocketId(playerParams.socketId);
     }
 
     if (existingPlayer.password !== playerParams.password) {
