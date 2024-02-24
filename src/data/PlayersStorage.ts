@@ -2,9 +2,11 @@ import { randomUUID } from 'crypto';
 
 import { IPlayer } from '@src/types/interfaces/IPlayer';
 import { IPlayerParams } from '@src/types/types';
-import Player from '@src/models/Player';
-import RegistrationError from '@src/errors/RegistrationError';
 import IPlayersStorage from '@src/types/interfaces/IPlayersStorage';
+
+import RegistrationError from '@src/errors/RegistrationError';
+
+import Player from '@src/models/Player';
 
 export default class PlayersStorage implements IPlayersStorage {
   private readonly storage: Record<string, IPlayer> = {};
