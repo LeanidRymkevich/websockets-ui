@@ -11,6 +11,7 @@ import { IRegData } from '@src/types/interfaces/IRegData';
 
 import CustomDB from '@src/data/CustomDB';
 import { getRegData } from '@src/utils/data_parser';
+import { reportOperationRes } from '@src/utils/console_printer';
 
 const registerPlayer = (data: IData, socket: WebSocket): void => {
   const storage: IPlayersStorage = CustomDB.getInstance().playersStorage;
@@ -19,9 +20,7 @@ const registerPlayer = (data: IData, socket: WebSocket): void => {
 
   try {
     regData = getRegData(data);
-
     player = storage.addPlayer({ ...regData, socket });
-
     const response = {
       type: EPersonalRespTypes.REGISTRATION,
       data: JSON.stringify({
@@ -33,6 +32,7 @@ const registerPlayer = (data: IData, socket: WebSocket): void => {
       id: 0,
     };
 
+    reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
     socket.send(JSON.stringify(response));
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
@@ -47,6 +47,7 @@ const registerPlayer = (data: IData, socket: WebSocket): void => {
         id: 0,
       };
 
+      reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
       socket.send(JSON.stringify(response));
     }
 

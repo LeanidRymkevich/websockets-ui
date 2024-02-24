@@ -31,6 +31,12 @@ const printErrorSocketMsg = (socketNum: number, error: Error): void => {
   console.log(`Total amount of sockets: ${socketNum}.\n`);
 };
 
+const reportOperationRes = (operation: string, result: unknown): void => {
+  console.log(`The operation "${operation}" has been executed. Result: `);
+  console.log(result);
+  console.log();
+};
+
 export {
   printHttpServerStartMsg,
   printHttpServerErrorMsg,
@@ -39,4 +45,5 @@ export {
   printNewSocketMsg,
   printCloseSocketMsg,
   printErrorSocketMsg,
+  reportOperationRes,
 };

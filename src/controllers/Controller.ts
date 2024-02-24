@@ -2,14 +2,15 @@ import WebSocket, { RawData } from 'ws';
 
 import IController from '@src/types/interfaces/IController';
 import ERespType from '@src/types/enums/ERespTypes';
+import ITypedController from '@src/types/interfaces/ITypedController';
+import IData from '@src/types/interfaces/IData';
 
 import PersonalController from '@src/controllers/PersonalController';
 import GameRoomController from '@src/controllers/GameRoomController';
-import CommonController from '@src/controllers/CommonController';
-import IData from '@src/types/interfaces/IData';
+
 import { parseRawData } from '@src/utils/data_parser';
-import ITypedController from '@src/types/interfaces/ITypedController';
 import { extractErrorMsg } from '@src/utils/error_util';
+import { reportOperationRes } from '@src/utils/console_printer';
 
 export default class Controller implements IController {
   private static readonly instance: IController = new Controller();
@@ -17,7 +18,6 @@ export default class Controller implements IController {
   private readonly commands: Record<ERespType, ITypedController> = {
     [ERespType.PERSONAL]: new PersonalController(),
     [ERespType.GAME_ROOM]: new GameRoomController(),
-    [ERespType.COMMON]: new CommonController(),
   };
 
   private constructor() {}
@@ -37,9 +37,10 @@ export default class Controller implements IController {
       this.commands[controllerName as ERespType].execute(parsedData, socket);
     } catch (err) {
       const msg = extractErrorMsg(err, 'unknown error');
+      const response = { error: true, errorText: msg };
 
-      if (!socket) return;
-      socket.send(JSON.stringify({ error: true, errorText: msg }));
+      reportOperationRes('Data parsing and searching for command', response);
+      socket.send(JSON.stringify(response));
     }
   };
 
