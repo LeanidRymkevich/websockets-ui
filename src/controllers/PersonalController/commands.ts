@@ -32,7 +32,7 @@ const registerPlayer = (data: IData, socket: WebSocket): void => {
       }),
       id: 0,
     };
-    console.log(response);
+
     socket.send(JSON.stringify(response));
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {

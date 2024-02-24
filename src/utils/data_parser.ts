@@ -12,7 +12,11 @@ const parseRawData = (rawData: RawData): IData => {
     const obj: unknown = JSON.parse(rawData.toString());
     const { id, type, data } = obj as IData;
 
-    if (typeof id !== 'number' || typeof type !== 'string' || !data)
+    if (
+      typeof id !== 'number' ||
+      typeof type !== 'string' ||
+      data === undefined
+    )
       throw new DataParsingError(
         'Invalid request body! Some or all of mandatory fields - id, type, data are missing!'
       );
@@ -25,7 +29,15 @@ const parseRawData = (rawData: RawData): IData => {
 };
 
 const getRegData = ({ data }: IData): IRegData => {
-  const { name, password } = JSON.parse(String(data)) as IRegData;
+  let obj: unknown;
+
+  try {
+    obj = JSON.parse(String(data));
+  } catch {
+    throw new DataParsingError('Invalid data field JSON');
+  }
+
+  const { name, password } = obj as IRegData;
 
   if (
     typeof name !== 'string' ||

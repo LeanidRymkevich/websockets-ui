@@ -25,12 +25,12 @@ export default class Controller implements IController {
   public static getInstance = (): IController => this.instance;
 
   public execute = (data: RawData, socket: WebSocket): void => {
-    const parsedData: IData = parseRawData(data);
-    const controllerName: string | undefined = this.findCommand(
-      parsedData.type
-    );
-
     try {
+      const parsedData: IData = parseRawData(data);
+      const controllerName: string | undefined = this.findCommand(
+        parsedData.type
+      );
+
       if (!controllerName)
         throw new Error(`Command type '${parsedData.type}' doesn't exists!`);
 

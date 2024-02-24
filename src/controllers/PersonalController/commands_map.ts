@@ -9,6 +9,8 @@ const commands: Record<EPersonalRespTypes, TypedCommand> = {
   [EPersonalRespTypes.CREATE_ROOM]: () =>
     console.log(EPersonalRespTypes.CREATE_ROOM),
   [EPersonalRespTypes.REGISTRATION]: registerPlayer,
+  [EPersonalRespTypes.SINGLE_PLAY]: () =>
+    console.log(EPersonalRespTypes.SINGLE_PLAY),
 };
 
 export { commands };
