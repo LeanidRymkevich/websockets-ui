@@ -19,30 +19,31 @@ const registerPlayer = (data: IData, socket: WebSocket): void => {
 
   try {
     regData = getRegData(data);
+
     player = storage.addPlayer({ ...regData, socket });
 
     const response = {
       type: EPersonalRespTypes.REGISTRATION,
-      data: {
-        name: player.login,
+      data: JSON.stringify({
+        name: player.name,
         index: player.index,
         error: false,
         errorText: '',
-      },
+      }),
       id: 0,
     };
-
+    console.log(response);
     socket.send(JSON.stringify(response));
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
       const response = {
         type: EPersonalRespTypes.REGISTRATION,
-        data: {
-          name: regData ? regData.login : '',
+        data: JSON.stringify({
+          name: regData ? regData.name : '',
           index: player ? player.index : '',
           error: true,
           errorText: err.message,
-        },
+        }),
         id: 0,
       };
 

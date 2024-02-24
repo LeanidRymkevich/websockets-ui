@@ -25,18 +25,18 @@ const parseRawData = (rawData: RawData): IData => {
 };
 
 const getRegData = ({ data }: IData): IRegData => {
-  const { login, password } = data as IRegData;
+  const { name, password } = JSON.parse(String(data)) as IRegData;
 
   if (
-    typeof login !== 'string' ||
-    !login ||
+    typeof name !== 'string' ||
+    !name ||
     typeof password !== 'string' ||
     !password
   ) {
     throw new DataParsingError('Invalid type or value of name or password');
   }
 
-  return { login, password };
+  return { name, password };
 };
 
 export { parseRawData, getRegData };

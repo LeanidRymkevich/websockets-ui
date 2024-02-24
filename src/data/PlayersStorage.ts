@@ -11,7 +11,7 @@ export default class PlayersStorage implements IPlayersStorage {
 
   public addPlayer = (playerParams: IPlayerParams): IPlayer => {
     const existingPlayer: IPlayer | null = this.getPlayerByLogin(
-      playerParams.login
+      playerParams.name
     );
 
     if (!existingPlayer) {
@@ -28,9 +28,9 @@ export default class PlayersStorage implements IPlayersStorage {
     return existingPlayer;
   };
 
-  private getPlayerByLogin = (login: string): IPlayer | null => {
+  private getPlayerByLogin = (name: string): IPlayer | null => {
     const result: IPlayer | undefined = Object.values(this.storage).find(
-      (player: IPlayer): boolean => player.login === login
+      (player: IPlayer): boolean => player.name === name
     );
 
     return result || null;
