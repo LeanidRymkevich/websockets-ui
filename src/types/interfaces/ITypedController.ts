@@ -1,8 +1,6 @@
-import WebSocket from 'ws';
-
-import IData from '@src/types/interfaces/IData';
+import { TypedCommand } from '@src/types/types';
 
 export default interface ITypedController {
-  execute: (data: IData, socket: WebSocket) => void;
+  execute: TypedCommand;
   haveCommand(commandName: string): boolean;
 }

@@ -1,9 +1,11 @@
 import { RawData } from 'ws';
 
 import IData from '@src/types/interfaces/IData';
-import { extractErrorMsg } from '@src/utils/error_util';
 import { IRegData } from '@src/types/interfaces/IRegData';
+
 import DataParsingError from '@src/errors/DataParsingError';
+
+import { extractErrorMsg } from '@src/utils/error_util';
 
 const parseRawData = (rawData: RawData): IData => {
   try {
