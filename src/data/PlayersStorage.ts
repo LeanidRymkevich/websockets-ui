@@ -12,18 +12,22 @@ export default class PlayersStorage implements IPlayersStorage {
   private readonly storage: Record<string, IPlayer> = {};
 
   public addPlayer = (playerParams: IPlayerParams): IPlayer => {
-    const existingPlayer: IPlayer | null = this.getPlayerByLogin(
+    const existingPlayerKey: string | null = this.getPlayerKeyByLogin(
       playerParams.name
     );
 
-    if (!existingPlayer) {
+    if (!existingPlayerKey) {
       const index: string = randomUUID();
       const player: IPlayer = new Player(playerParams, index);
-      this.storage[index] = player;
+      this.storage[playerParams.socketId] = player;
       return player;
-    } else {
-      existingPlayer.changeSocketId(playerParams.socketId);
     }
+
+    const existingPlayer = this.storage[existingPlayerKey]!;
+    existingPlayer.changeSocketId(playerParams.socketId);
+
+    delete this.storage[existingPlayerKey];
+    this.storage[playerParams.socketId] = existingPlayer;
 
     if (existingPlayer.password !== playerParams.password) {
       throw new RegistrationError(playerParams);
@@ -32,9 +36,13 @@ export default class PlayersStorage implements IPlayersStorage {
     return existingPlayer;
   };
 
-  private getPlayerByLogin = (name: string): IPlayer | null => {
-    const result: IPlayer | undefined = Object.values(this.storage).find(
-      (player: IPlayer): boolean => player.name === name
+  public getPlayerBySocketId = (id: string): IPlayer | null => {
+    return this.storage[id] || null;
+  };
+
+  private getPlayerKeyByLogin = (name: string): string | null => {
+    const result: string | undefined = Object.keys(this.storage).find(
+      (key: string): boolean => this.storage[key]!.name === name
     );
 
     return result || null;
