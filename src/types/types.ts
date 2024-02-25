@@ -11,6 +11,6 @@ type TypedCommand = (
   socketId: string
 ) => void;
 
-type CommonCommand = (socket: WebSocket) => void;
+type CommonCommand = (socketMap: Record<string, WebSocket>) => void;
 
 export { IPlayerParams, TypedCommand, CommonCommand };

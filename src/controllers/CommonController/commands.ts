@@ -6,7 +6,7 @@ import ECommonRespTypes from '@src/types/enums/ECommonRespTypes';
 
 import { reportOperationRes } from '@src/utils/console_printer';
 
-const updateRoom = (socket: WebSocket): void => {
+const updateRoom = (socketMap: Record<string, WebSocket>): void => {
   const rooms: IRoom[] = CustomDB.getInstance().roomsStorage.getUnfilledRooms();
 
   const data = rooms.map((room: IRoom) => {
@@ -29,7 +29,9 @@ const updateRoom = (socket: WebSocket): void => {
   };
 
   reportOperationRes(ECommonRespTypes.UPDATE_ROOM, response);
-  socket.send(JSON.stringify(response));
+  Object.values(socketMap).forEach((socket: WebSocket): void => {
+    socket.send(JSON.stringify(response));
+  });
 };
 
 export { updateRoom };

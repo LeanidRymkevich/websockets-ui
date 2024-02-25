@@ -51,7 +51,7 @@ const registerPlayer = (
     reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
     socket.send(JSON.stringify(response));
 
-    commonController.execute(ECommonRespTypes.UPDATE_ROOM, socket);
+    commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
       const response = {

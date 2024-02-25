@@ -15,7 +15,10 @@ export default class CommonController implements ICommonController {
 
   public static getInstance = (): ICommonController => this.instance;
 
-  public execute = (command: ECommonRespTypes, socket: WebSocket): void => {
-    this.commands[command](socket);
+  public execute = (
+    command: ECommonRespTypes,
+    socketMap: Record<string, WebSocket>
+  ): void => {
+    this.commands[command](socketMap);
   };
 }
