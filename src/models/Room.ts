@@ -7,29 +7,30 @@ import ERoomEvent from '@src/types/enums/ERoomEvent';
 export default class Room extends EventEmitter implements IRoom {
   public readonly roomId: string;
 
-  private firstPlayer: IPlayer;
+  private firstPlayer: IPlayer | null = null;
   private secondPlayer: IPlayer | null = null;
   private game: Game | null = null;
 
-  public constructor(firstPlayer: IPlayer, id: string) {
+  public constructor(id: string) {
     super();
-    this.firstPlayer = firstPlayer;
     this.roomId = id;
   }
 
-  public getFirstPlayer = (): IPlayer => this.firstPlayer;
+  public getFirstPlayer = (): IPlayer | null => this.firstPlayer;
   public getSecondPlayer = (): IPlayer | null => this.secondPlayer;
 
-  public addSecondPlayer = (player: IPlayer): IPlayer => {
-    if (!this.secondPlayer) {
+  public addPlayer = (player: IPlayer): IPlayer => {
+    if (!this.firstPlayer) {
+      this.firstPlayer = player;
+    } else {
       this.secondPlayer = player;
     }
-    return this.secondPlayer;
+    return player;
   };
 
   public createGame = (): Game => {
-    if (!this.secondPlayer)
-      throw new Error('There is no second player in this room!');
+    if (!this.secondPlayer || !this.firstPlayer)
+      throw new Error('One or two players are missing in the room!');
     if (!this.game) {
       this.game = new Game(this.firstPlayer, this.secondPlayer);
     }

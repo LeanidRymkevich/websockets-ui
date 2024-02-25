@@ -94,7 +94,7 @@ const createRoom = (
     throw new Error(`Socket with id "${socketId}" not found in WSS socket map`);
   if (!player) throw new Error(`User with id "${socketId} not found in db"`);
 
-  roomsStorage.addRoom(player);
+  roomsStorage.addRoom();
   commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
 };
 

@@ -10,9 +10,9 @@ import Room from '@src/models/Room';
 export default class RoomsStorage implements IRoomsStorage {
   private storage: IRoom[] = [];
 
-  public addRoom = (player: IPlayer): IRoom => {
+  public addRoom = (): IRoom => {
     const id: string = randomUUID();
-    const room: IRoom = new Room(player, id);
+    const room: IRoom = new Room(id);
 
     this.storage.push(room);
     room.on(ERoomEvent.CLOSE, (): void => {
@@ -27,10 +27,10 @@ export default class RoomsStorage implements IRoomsStorage {
   public getRoomByPlayerId = (playerId: string): IRoom | null => {
     const result: IRoom | undefined = this.storage.find(
       (room: IRoom): boolean => {
-        const firstPlayer: IPlayer = room.getFirstPlayer();
+        const firstPlayer: IPlayer | null = room.getFirstPlayer();
         const secondPlayer: IPlayer | null = room.getSecondPlayer();
         return (
-          firstPlayer.index === playerId ||
+          (!!firstPlayer && firstPlayer.index === playerId) ||
           (!!secondPlayer && secondPlayer.index === playerId)
         );
       }

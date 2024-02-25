@@ -3,8 +3,8 @@ import EventEmitter from 'events';
 
 export default interface IRoom extends EventEmitter {
   readonly roomId: string;
-  addSecondPlayer: (player: IPlayer) => IPlayer;
-  getFirstPlayer: () => IPlayer;
+  addPlayer: (player: IPlayer) => IPlayer;
+  getFirstPlayer: () => IPlayer | null;
   getSecondPlayer: () => IPlayer | null;
   close: () => boolean;
 }
