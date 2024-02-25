@@ -48,7 +48,10 @@ export default class Controller implements IController {
       const response = { error: true, errorText: msg };
       const socket = socketMap[socketId];
 
-      if (!socket) return;
+      if (!socket)
+        throw new Error(
+          `Socket with id "${socketId}" not found in WSS socket map`
+        );
 
       reportOperationRes('Data parsing and searching for command', response);
       socket.send(JSON.stringify(response));

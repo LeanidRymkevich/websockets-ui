@@ -10,6 +10,8 @@ import IPlayersStorage from '@src/types/interfaces/IPlayersStorage';
 import { IRegData } from '@src/types/interfaces/IRegData';
 import ECommonRespTypes from '@src/types/enums/ECommonRespTypes';
 import ICommonController from '@src/types/interfaces/ICommonController';
+import IRoomsStorage from '@src/types/interfaces/IRoomsStorage';
+import ICustomDB from '@src/types/interfaces/ICustomDB';
 
 import CustomDB from '@src/data/CustomDB';
 import { getRegData } from '@src/utils/data_parser';
@@ -28,7 +30,8 @@ const registerPlayer = (
   let regData: IRegData | null = null;
   let player: IPlayer | null = null;
 
-  if (!socket) return;
+  if (!socket)
+    throw new Error(`Socket with id "${socketId}" not found in WSS socket map`);
 
   try {
     regData = getRegData(data);
@@ -74,12 +77,25 @@ const registerPlayer = (
   }
 };
 
-// const createRoom = (
-//   data: IData,
-//   socketMap: Record<string, WebSocket>,
-//   socketId: string
-// ): void => {
+const createRoom = (
+  _data: IData,
+  socketMap: Record<string, WebSocket>,
+  socketId: string
+): void => {
+  const db: ICustomDB = CustomDB.getInstance();
+  const roomsStorage: IRoomsStorage = db.roomsStorage;
+  const playersStorage: IPlayersStorage = db.playersStorage;
+  const commonController: ICommonController = CommonController.getInstance();
 
-// }
+  const socket = socketMap[socketId];
+  const player: IPlayer | null = playersStorage.getPlayerBySocketId(socketId);
 
-export { registerPlayer };
+  if (!socket)
+    throw new Error(`Socket with id "${socketId}" not found in WSS socket map`);
+  if (!player) throw new Error(`User with id "${socketId} not found in db"`);
+
+  roomsStorage.addRoom(player);
+  commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
+};
+
+export { registerPlayer, createRoom };
