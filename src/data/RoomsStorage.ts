@@ -8,24 +8,26 @@ import IRoomsStorage from '@src/types/interfaces/IRoomsStorage';
 import Room from '@src/models/Room';
 
 export default class RoomsStorage implements IRoomsStorage {
-  private storage: IRoom[] = [];
+  private readonly storage: Record<string, IRoom> = {};
 
   public addRoom = (): IRoom => {
     const id: string = randomUUID();
     const room: IRoom = new Room(id);
 
-    this.storage.push(room);
+    this.storage[id] = room;
     room.on(ERoomEvent.CLOSE, (): void => {
-      this.storage = this.storage.filter(
-        (room: IRoom): boolean => room.roomId !== id
-      );
+      delete this.storage[id];
     });
 
     return room;
   };
 
+  public getRoomById = (id: string): IRoom | null => {
+    return this.storage[id] || null;
+  };
+
   public getRoomByPlayerId = (playerId: string): IRoom | null => {
-    const result: IRoom | undefined = this.storage.find(
+    const result: IRoom | undefined = Object.values(this.storage).find(
       (room: IRoom): boolean => {
         const firstPlayer: IPlayer | null = room.getFirstPlayer();
         const secondPlayer: IPlayer | null = room.getSecondPlayer();
@@ -40,7 +42,7 @@ export default class RoomsStorage implements IRoomsStorage {
   };
 
   public getUnfilledRooms = (): IRoom[] =>
-    this.storage.filter(
+    Object.values(this.storage).filter(
       (room: IRoom): boolean =>
         !room.getSecondPlayer() || !room.getFirstPlayer()
     );

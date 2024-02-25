@@ -51,4 +51,22 @@ const getRegData = ({ data }: IData): IRegData => {
   return { name, password };
 };
 
-export { parseRawData, getRegData };
+const getIdxRoomFromReq = ({ data }: IData): string => {
+  let obj: unknown;
+
+  try {
+    obj = JSON.parse(String(data));
+  } catch {
+    throw new DataParsingError('Invalid data field JSON');
+  }
+
+  const { indexRoom } = obj as { indexRoom: string };
+
+  if (typeof indexRoom !== 'string' || !indexRoom) {
+    throw new DataParsingError('Invalid type or value of indexRoom');
+  }
+
+  return indexRoom;
+};
+
+export { parseRawData, getRegData, getIdxRoomFromReq };

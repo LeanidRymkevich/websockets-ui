@@ -14,9 +14,10 @@ import IRoomsStorage from '@src/types/interfaces/IRoomsStorage';
 import ICustomDB from '@src/types/interfaces/ICustomDB';
 
 import CustomDB from '@src/data/CustomDB';
-import { getRegData } from '@src/utils/data_parser';
+import { getIdxRoomFromReq, getRegData } from '@src/utils/data_parser';
 import { reportOperationRes } from '@src/utils/console_printer';
 import CommonController from '@src/controllers/CommonController';
+import IRoom from '@src/types/interfaces/IRoom';
 
 const registerPlayer = (
   data: IData,
@@ -98,4 +99,40 @@ const createRoom = (
   commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
 };
 
-export { registerPlayer, createRoom };
+const addUserToRoom = (
+  data: IData,
+  socketMap: Record<string, WebSocket>,
+  socketId: string
+): void => {
+  const db: ICustomDB = CustomDB.getInstance();
+  const roomsStorage: IRoomsStorage = db.roomsStorage;
+  const playersStorage: IPlayersStorage = db.playersStorage;
+  const commonController: ICommonController = CommonController.getInstance();
+
+  const socket = socketMap[socketId];
+  const roomId: string = getIdxRoomFromReq(data);
+  const player: IPlayer | null = playersStorage.getPlayerBySocketId(socketId);
+  const room: IRoom | null = roomsStorage.getRoomById(roomId);
+
+  if (!socket)
+    throw new Error(`Socket with id "${socketId}" not found in WSS socket map`);
+  if (!player) throw new Error(`User with id "${socketId}" not found in db"`);
+  if (!room) throw new Error(`Room with id "${roomId}" not found in db"`);
+
+  const firstPlayer: IPlayer | null = room.getFirstPlayer();
+  const secondPlayer: IPlayer | null = room.getSecondPlayer();
+
+  if (
+    (!!firstPlayer && firstPlayer.index === socketId) ||
+    (!!secondPlayer && secondPlayer.index === socketId)
+  ) {
+    throw new Error(
+      `User with id "${socketId}" are already in the room with id "${roomId}"`
+    );
+  }
+
+  room.addPlayer(player);
+  commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
+};
+
+export { registerPlayer, createRoom, addUserToRoom };
