@@ -3,7 +3,10 @@ import WebSocket from 'ws';
 import IData from '@src/types/interfaces/IData';
 import IPlayer from '@src/types/interfaces/IPlayer';
 
-type IPlayerParams = Pick<IPlayer, 'name' | 'password'> & { socketId: string };
+type IPlayerParams = Pick<IPlayer, 'name' | 'password'> & {
+  socket: WebSocket;
+  socketId: string;
+};
 
 type TypedCommand = (
   data: IData,

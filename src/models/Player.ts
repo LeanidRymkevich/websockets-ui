@@ -4,6 +4,7 @@ import IRoom from '@src/types/interfaces/IRoom';
 import ERoomEvent from '@src/types/enums/ERoomEvent';
 import EventEmitter from 'events';
 import EPlayerEvents from '@src/types/enums/EPlayerEvents';
+import { WebSocket } from 'ws';
 
 export default class Player extends EventEmitter implements IPlayer {
   public readonly name: string;
@@ -11,6 +12,7 @@ export default class Player extends EventEmitter implements IPlayer {
   public readonly index: string;
 
   private socketId: string;
+  private socket: WebSocket;
   private room: IRoom | null = null;
 
   public constructor(params: IPlayerParams, index: string) {
@@ -19,12 +21,16 @@ export default class Player extends EventEmitter implements IPlayer {
     this.name = params.name;
     this.password = params.password;
     this.socketId = params.socketId;
+    this.socket = params.socket;
   }
 
   public getSocketId = (): string => this.socketId;
+  public getSocket = (): WebSocket => this.socket;
   public getRoom = (): IRoom | null => this.room;
 
   public changeSocketId = (id: string): string => (this.socketId = id);
+  public changeSocket = (socket: WebSocket): WebSocket =>
+    (this.socket = socket);
 
   public enterRoom = (room: IRoom): IRoom => {
     this.room = room;

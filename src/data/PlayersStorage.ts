@@ -25,6 +25,7 @@ export default class PlayersStorage implements IPlayersStorage {
 
     const existingPlayer = this.storage[existingPlayerKey]!;
     existingPlayer.changeSocketId(playerParams.socketId);
+    existingPlayer.changeSocket(playerParams.socket);
 
     delete this.storage[existingPlayerKey];
     this.storage[playerParams.socketId] = existingPlayer;

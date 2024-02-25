@@ -32,7 +32,7 @@ const registerPlayer = (
 
   try {
     regData = getRegData(data);
-    player = storage.addPlayer({ ...regData, socketId });
+    player = storage.addPlayer({ ...regData, socket, socketId });
 
     socket.on('close', player.leave);
     socket.on('error', player.leave);
@@ -73,5 +73,13 @@ const registerPlayer = (
     throw err;
   }
 };
+
+// const createRoom = (
+//   data: IData,
+//   socketMap: Record<string, WebSocket>,
+//   socketId: string
+// ): void => {
+
+// }
 
 export { registerPlayer };
