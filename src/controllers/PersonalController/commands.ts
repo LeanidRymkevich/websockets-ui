@@ -8,10 +8,13 @@ import IData from '@src/types/interfaces/IData';
 import IPlayer from '@src/types/interfaces/IPlayer';
 import IPlayersStorage from '@src/types/interfaces/IPlayersStorage';
 import { IRegData } from '@src/types/interfaces/IRegData';
+import ECommonRespTypes from '@src/types/enums/ECommonRespTypes';
+import ICommonController from '@src/types/interfaces/ICommonController';
 
 import CustomDB from '@src/data/CustomDB';
 import { getRegData } from '@src/utils/data_parser';
 import { reportOperationRes } from '@src/utils/console_printer';
+import CommonController from '@src/controllers/CommonController';
 
 const registerPlayer = (
   data: IData,
@@ -19,9 +22,11 @@ const registerPlayer = (
   socketId: string
 ): void => {
   const storage: IPlayersStorage = CustomDB.getInstance().playersStorage;
+  const socket = socketMap[socketId];
+  const commonController: ICommonController = CommonController.getInstance();
+
   let regData: IRegData | null = null;
   let player: IPlayer | null = null;
-  const socket = socketMap[socketId];
 
   if (!socket) return;
 
@@ -45,6 +50,8 @@ const registerPlayer = (
 
     reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
     socket.send(JSON.stringify(response));
+
+    commonController.execute(ECommonRespTypes.UPDATE_ROOM, socket);
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
       const response = {
