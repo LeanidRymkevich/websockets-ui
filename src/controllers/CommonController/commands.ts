@@ -22,11 +22,11 @@ const updateRoom = (socket: WebSocket): void => {
     };
   });
 
-  const response = JSON.stringify({
+  const response = {
     type: ECommonRespTypes.UPDATE_ROOM,
     data: JSON.stringify(data),
     id: 0,
-  });
+  };
 
   reportOperationRes(ECommonRespTypes.UPDATE_ROOM, response);
   socket.send(JSON.stringify(response));
