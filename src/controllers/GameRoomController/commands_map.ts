@@ -1,8 +1,4 @@
-import IData from '@src/types/interfaces/IData';
-import ITypedController from '@src/types/interfaces/ITypedController';
-import AbstractController from '@src/controllers/AbstractController';
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
-import WebSocket from 'ws';
 
 // TODO: add appropriate type
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -20,20 +16,4 @@ const commands: Record<EGameRoomRespTypes, Function> = {
   [EGameRoomRespTypes.FINISH]: () => console.log(EGameRoomRespTypes.FINISH),
 };
 
-export default class GameRoomController
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  extends AbstractController<EGameRoomRespTypes, Function>
-  implements ITypedController
-{
-  public constructor() {
-    super(commands);
-  }
-
-  public execute = (
-    data: IData,
-    socketMap: Record<string, WebSocket>,
-    socketId: string
-  ): void => {
-    this.commands[data.type as EGameRoomRespTypes](data, socketMap, socketId);
-  };
-}
+export { commands };
