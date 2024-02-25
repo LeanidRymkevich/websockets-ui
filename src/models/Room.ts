@@ -3,6 +3,7 @@ import Game from './Game';
 import IRoom from '@src/types/interfaces/IRoom';
 import EventEmitter from 'events';
 import ERoomEvent from '@src/types/enums/ERoomEvent';
+import EPlayerEvents from '@src/types/enums/EPlayerEvents';
 
 export default class Room extends EventEmitter implements IRoom {
   public readonly roomId: string;
@@ -22,9 +23,19 @@ export default class Room extends EventEmitter implements IRoom {
   public addPlayer = (player: IPlayer): IPlayer => {
     if (!this.firstPlayer) {
       this.firstPlayer = player;
+      this.firstPlayer.on(
+        EPlayerEvents.LEAVE,
+        (): null => (this.firstPlayer = null)
+      );
     } else {
       this.secondPlayer = player;
+      this.secondPlayer.on(
+        EPlayerEvents.LEAVE,
+        (): null => (this.firstPlayer = null)
+      );
+      this.emit(ERoomEvent.FILL, this);
     }
+
     return player;
   };
 
