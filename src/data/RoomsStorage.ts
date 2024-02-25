@@ -40,5 +40,8 @@ export default class RoomsStorage implements IRoomsStorage {
   };
 
   public getUnfilledRooms = (): IRoom[] =>
-    this.storage.filter((room: IRoom): boolean => !room.getSecondPlayer());
+    this.storage.filter(
+      (room: IRoom): boolean =>
+        !room.getSecondPlayer() || !room.getFirstPlayer()
+    );
 }
