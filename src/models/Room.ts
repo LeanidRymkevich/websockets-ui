@@ -1,8 +1,10 @@
 import IPlayer from '@src/types/interfaces/IPlayer';
 import Game from './Game';
 import IRoom from '@src/types/interfaces/IRoom';
+import EventEmitter from 'events';
+import ERoomEvent from '@src/types/enums/ERoomEvent';
 
-export default class Room implements IRoom {
+export default class Room extends EventEmitter implements IRoom {
   public readonly roomId: string;
 
   private firstPlayer: IPlayer;
@@ -10,6 +12,7 @@ export default class Room implements IRoom {
   private game: Game | null = null;
 
   public constructor(firstPlayer: IPlayer, id: string) {
+    super();
     this.firstPlayer = firstPlayer;
     this.roomId = id;
   }
@@ -32,4 +35,6 @@ export default class Room implements IRoom {
     }
     return this.game;
   };
+
+  public close = (): boolean => this.emit(ERoomEvent.CLOSE, this);
 }
