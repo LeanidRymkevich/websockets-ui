@@ -12,12 +12,12 @@ import ECommonRespTypes from '@src/types/enums/ECommonRespTypes';
 import ICommonController from '@src/types/interfaces/ICommonController';
 import IRoomsStorage from '@src/types/interfaces/IRoomsStorage';
 import ICustomDB from '@src/types/interfaces/ICustomDB';
+import IRoom from '@src/types/interfaces/IRoom';
 
 import CustomDB from '@src/data/CustomDB';
 import { getIdxRoomFromReq, getRegData } from '@src/utils/data_parser';
 import { reportOperationRes } from '@src/utils/console_printer';
 import CommonController from '@src/controllers/CommonController';
-import IRoom from '@src/types/interfaces/IRoom';
 
 const registerPlayer = (
   data: IData,
@@ -123,8 +123,8 @@ const addUserToRoom = (
   const secondPlayer: IPlayer | null = room.getSecondPlayer();
 
   if (
-    (!!firstPlayer && firstPlayer.index === socketId) ||
-    (!!secondPlayer && secondPlayer.index === socketId)
+    (!!firstPlayer && firstPlayer.getSocketId() === socketId) ||
+    (!!secondPlayer && secondPlayer.getSocketId() === socketId)
   ) {
     throw new Error(
       `User with id "${socketId}" are already in the room with id "${roomId}"`

@@ -32,8 +32,8 @@ export default class RoomsStorage implements IRoomsStorage {
         const firstPlayer: IPlayer | null = room.getFirstPlayer();
         const secondPlayer: IPlayer | null = room.getSecondPlayer();
         return (
-          (!!firstPlayer && firstPlayer.index === playerId) ||
-          (!!secondPlayer && secondPlayer.index === playerId)
+          (!!firstPlayer && firstPlayer.getSocketId() === playerId) ||
+          (!!secondPlayer && secondPlayer.getSocketId() === playerId)
         );
       }
     );
