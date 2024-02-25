@@ -132,6 +132,7 @@ const addUserToRoom = (
   }
 
   room.addPlayer(player);
+  player.enterRoom(room);
   commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
 };
 

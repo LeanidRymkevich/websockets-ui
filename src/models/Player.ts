@@ -36,6 +36,7 @@ export default class Player extends EventEmitter implements IPlayer {
     this.room = room;
     room.on(ERoomEvent.CLOSE, (): void => {
       this.room = null;
+      console.log(`${this.name} leaves room with id ${room.roomId}`);
     });
 
     return room;
