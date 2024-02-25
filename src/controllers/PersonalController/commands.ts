@@ -52,6 +52,7 @@ const registerPlayer = (
     socket.send(JSON.stringify(response));
 
     commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
+    commonController.execute(ECommonRespTypes.UPDATE_WINNERS, socketMap);
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
       const response = {

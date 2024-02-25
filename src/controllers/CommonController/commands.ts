@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 import CustomDB from '@src/data/CustomDB';
 import IRoom from '@src/types/interfaces/IRoom';
 import ECommonRespTypes from '@src/types/enums/ECommonRespTypes';
+import IWinnerInfo from '@src/types/interfaces/IWinnerInfo';
 
 import { reportOperationRes } from '@src/utils/console_printer';
 
@@ -34,4 +35,20 @@ const updateRoom = (socketMap: Record<string, WebSocket>): void => {
   });
 };
 
-export { updateRoom };
+const updateWinners = (socketMap: Record<string, WebSocket>): void => {
+  const winners: IWinnerInfo[] =
+    CustomDB.getInstance().winnersStorage.getWinners();
+
+  const response = {
+    type: ECommonRespTypes.UPDATE_WINNERS,
+    data: JSON.stringify(winners),
+    id: 0,
+  };
+
+  reportOperationRes(ECommonRespTypes.UPDATE_WINNERS, response);
+  Object.values(socketMap).forEach((socket: WebSocket): void => {
+    socket.send(JSON.stringify(response));
+  });
+};
+
+export { updateRoom, updateWinners };
