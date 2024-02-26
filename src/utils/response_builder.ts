@@ -1,6 +1,38 @@
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
+import EPersonalRespTypes from '@src/types/enums/EPersonalRespTypes';
 import IGame from '@src/types/interfaces/IGame';
 import IPlayer from '@src/types/interfaces/IPlayer';
+import { IRegData } from '@src/types/interfaces/IRegData';
+
+const getRegisterPlayerResp = (player: IPlayer): unknown => {
+  return {
+    type: EPersonalRespTypes.REGISTRATION,
+    data: JSON.stringify({
+      name: player.name,
+      index: player.index,
+      error: false,
+      errorText: '',
+    }),
+    id: 0,
+  };
+};
+
+const getRegisterPlayerErrResp = (
+  player: IPlayer | null,
+  regData: IRegData | null,
+  err: Error
+): unknown => {
+  return {
+    type: EPersonalRespTypes.REGISTRATION,
+    data: JSON.stringify({
+      name: regData ? regData.name : '',
+      index: player ? player.index : '',
+      error: true,
+      errorText: err.message,
+    }),
+    id: 0,
+  };
+};
 
 const getCreateGameRespData = (
   game: IGame,
@@ -35,6 +67,8 @@ const getFinishGameResp = (data: unknown): string => {
 };
 
 export {
+  getRegisterPlayerResp,
+  getRegisterPlayerErrResp,
   getCreateGameRespData,
   getCreateGameResp,
   getFinishGameData,

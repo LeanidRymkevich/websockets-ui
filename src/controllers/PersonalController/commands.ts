@@ -19,6 +19,10 @@ import CustomDB from '@src/data/CustomDB';
 import { getIdxRoomFromReq, getRegData } from '@src/utils/data_parser';
 import { reportOperationRes } from '@src/utils/console_printer';
 import CommonController from '@src/controllers/CommonController';
+import {
+  getRegisterPlayerErrResp,
+  getRegisterPlayerResp,
+} from '@src/utils/response_builder';
 
 const registerPlayer = (
   data: IData,
@@ -38,17 +42,7 @@ const registerPlayer = (
   try {
     regData = getRegData(data);
     player = storage.addPlayer({ ...regData, socket, socketId });
-
-    const response = {
-      type: EPersonalRespTypes.REGISTRATION,
-      data: JSON.stringify({
-        name: player!.name,
-        index: player!.index,
-        error: false,
-        errorText: '',
-      }),
-      id: 0,
-    };
+    const response = getRegisterPlayerResp(player);
 
     reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
     socket.send(JSON.stringify(response));
@@ -57,16 +51,7 @@ const registerPlayer = (
     commonController.execute(ECommonRespTypes.UPDATE_WINNERS, socketMap);
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
-      const response = {
-        type: EPersonalRespTypes.REGISTRATION,
-        data: JSON.stringify({
-          name: regData ? regData.name : '',
-          index: player ? player.index : '',
-          error: true,
-          errorText: err.message,
-        }),
-        id: 0,
-      };
+      const response = getRegisterPlayerErrResp(player, regData, err);
 
       reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
       socket.send(JSON.stringify(response));
