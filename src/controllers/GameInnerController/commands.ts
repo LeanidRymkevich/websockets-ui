@@ -7,11 +7,9 @@ import IWinnersStorage from '@src/types/interfaces/IWinnersStorage';
 import CustomDB from '@src/data/CustomDB';
 
 import {
-  getCreateGameResp,
   getCreateGameRespData,
   getFinishGameData,
-  getFinishGameResp,
-  getStartGameResp,
+  getResp,
   getStartGameRespData,
 } from '@src/utils/response_builder';
 import { reportOperationRes } from '@src/utils/console_printer';
@@ -25,8 +23,12 @@ const createGame = (game: IGame): void => {
   reportOperationRes(EGameRoomRespTypes.CREATE_GAME, firstPlayerData);
   reportOperationRes(EGameRoomRespTypes.CREATE_GAME, secondPlayerData);
 
-  game.firstPlayer.getSocket().send(getCreateGameResp(firstPlayerData));
-  game.secondPlayer.getSocket().send(getCreateGameResp(secondPlayerData));
+  game.firstPlayer
+    .getSocket()
+    .send(getResp(EGameRoomRespTypes.CREATE_GAME, firstPlayerData));
+  game.secondPlayer
+    .getSocket()
+    .send(getResp(EGameRoomRespTypes.CREATE_GAME, secondPlayerData));
 };
 
 const finishGame = (game: IGame): void => {
@@ -39,7 +41,7 @@ const finishGame = (game: IGame): void => {
   storage.addWinner(winner);
 
   const data: unknown = getFinishGameData(winner);
-  const response: string = getFinishGameResp(data);
+  const response: string = getResp(EGameRoomRespTypes.FINISH, data);
 
   reportOperationRes(EGameRoomRespTypes.FINISH, data);
   game.firstPlayer.getSocket().send(response);
@@ -55,8 +57,12 @@ const startGame = (game: IGame): void => {
   reportOperationRes(EGameRoomRespTypes.START_GAME, firstPlayerData);
   reportOperationRes(EGameRoomRespTypes.START_GAME, secondPlayerData);
 
-  game.firstPlayer.getSocket().send(getStartGameResp(firstPlayerData));
-  game.secondPlayer.getSocket().send(getStartGameResp(secondPlayerData));
+  game.firstPlayer
+    .getSocket()
+    .send(getResp(EGameRoomRespTypes.START_GAME, firstPlayerData));
+  game.secondPlayer
+    .getSocket()
+    .send(getResp(EGameRoomRespTypes.START_GAME, secondPlayerData));
 };
 
 export { createGame, finishGame, startGame };

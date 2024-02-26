@@ -20,8 +20,9 @@ import { getIdxRoomFromReq, getRegData } from '@src/utils/data_parser';
 import { reportOperationRes } from '@src/utils/console_printer';
 import CommonController from '@src/controllers/CommonController';
 import {
-  getRegisterPlayerErrResp,
-  getRegisterPlayerResp,
+  getRegisterPlayerData,
+  getRegisterPlayerErrData,
+  getResp,
 } from '@src/utils/response_builder';
 
 const registerPlayer = (
@@ -42,19 +43,19 @@ const registerPlayer = (
   try {
     regData = getRegData(data);
     player = storage.addPlayer({ ...regData, socket, socketId });
-    const response = getRegisterPlayerResp(player);
+    const respData: unknown = getRegisterPlayerData(player);
 
-    reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
-    socket.send(JSON.stringify(response));
+    reportOperationRes(EPersonalRespTypes.REGISTRATION, respData);
+    socket.send(getResp(EPersonalRespTypes.REGISTRATION, respData));
 
     commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
     commonController.execute(ECommonRespTypes.UPDATE_WINNERS, socketMap);
   } catch (err) {
     if (err instanceof RegistrationError || err instanceof DataParsingError) {
-      const response = getRegisterPlayerErrResp(player, regData, err);
+      const respData: unknown = getRegisterPlayerErrData(player, regData, err);
 
-      reportOperationRes(EPersonalRespTypes.REGISTRATION, response);
-      socket.send(JSON.stringify(response));
+      reportOperationRes(EPersonalRespTypes.REGISTRATION, respData);
+      socket.send(getResp(EPersonalRespTypes.REGISTRATION, respData));
     }
 
     throw err;
