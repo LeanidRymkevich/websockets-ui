@@ -93,10 +93,13 @@ export default class Game extends EventEmitter implements IGame {
 
     if (this.lastAttackRes.status === 'miss') {
       this.isFirstPlayerTurn = false;
+      this.controller.execute(EGameRoomRespTypes.TURN, this);
     } else if (this.lastAttackRes.status === 'shot') {
       this.isFirstPlayerTurn = true;
+      this.controller.execute(EGameRoomRespTypes.TURN, this);
     } else {
       this.isFirstPlayerTurn = true;
+      this.controller.execute(EGameRoomRespTypes.TURN, this);
     }
 
     if (!this.firstRemainShip!.length) {

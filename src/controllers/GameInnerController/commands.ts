@@ -7,6 +7,7 @@ import IWinnersStorage from '@src/types/interfaces/IWinnersStorage';
 import CustomDB from '@src/data/CustomDB';
 
 import {
+  getAttackRespData,
   getCreateGameRespData,
   getFinishGameData,
   getResp,
@@ -82,4 +83,22 @@ const turn = (game: IGame): void => {
   game.secondPlayer.getSocket().send(getResp(EGameRoomRespTypes.TURN, data));
 };
 
-export { createGame, finishGame, startGame, turn };
+const attack = (game: IGame): void => {
+  let currentPlayerId: string;
+
+  if (game.getIsFirstPlayerTurn()) {
+    currentPlayerId = game.firstPlayer.index;
+  } else {
+    currentPlayerId = game.secondPlayer.index;
+  }
+
+  const data = getAttackRespData(game.getLastAttackRes()!, currentPlayerId);
+  reportOperationRes(EGameRoomRespTypes.ATTACK, data);
+
+  game.firstPlayer.getSocket().send(getResp(EGameRoomRespTypes.ATTACK, data));
+  game.secondPlayer.getSocket().send(getResp(EGameRoomRespTypes.ATTACK, data));
+
+  turn(game);
+};
+
+export { createGame, finishGame, startGame, turn, attack };

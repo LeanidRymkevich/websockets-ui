@@ -4,6 +4,8 @@ import IData from '@src/types/interfaces/IData';
 import { IRegData } from '@src/types/interfaces/IRegData';
 import IAddShipsData from '@src/types/interfaces/IAddShipsData';
 import IShipPosition from '@src/types/interfaces/IShipPosition';
+import IAttackData from '@src/types/interfaces/IAttackData';
+import IRandomAttackData from '@src/types/interfaces/IRandomAttackData';
 
 import DataParsingError from '@src/errors/DataParsingError';
 
@@ -120,4 +122,65 @@ const getAddShipsData = ({ data }: IData): IAddShipsData => {
   return obj as IAddShipsData;
 };
 
-export { parseRawData, getRegData, getIdxRoomFromReq, getAddShipsData };
+const getAttackData = ({ data }: IData): IAttackData => {
+  let obj: unknown;
+
+  try {
+    obj = JSON.parse(String(data));
+  } catch {
+    throw new DataParsingError('Invalid data field JSON');
+  }
+
+  const { gameId, x, y, indexPlayer } = obj as IAttackData;
+
+  if (
+    !gameId ||
+    !indexPlayer ||
+    typeof gameId !== 'string' ||
+    typeof indexPlayer !== 'string' ||
+    typeof x !== 'number' ||
+    typeof y !== 'number' ||
+    x < 0 ||
+    y < 0
+  ) {
+    throw new DataParsingError(
+      'Invalid values of gameId, ships or indexPlayer'
+    );
+  }
+
+  return obj as IAttackData;
+};
+
+const getRandomAttackData = ({ data }: IData): IRandomAttackData => {
+  let obj: unknown;
+
+  try {
+    obj = JSON.parse(String(data));
+  } catch {
+    throw new DataParsingError('Invalid data field JSON');
+  }
+
+  const { gameId, indexPlayer } = obj as IRandomAttackData;
+
+  if (
+    !gameId ||
+    !indexPlayer ||
+    typeof gameId !== 'string' ||
+    typeof indexPlayer !== 'string'
+  ) {
+    throw new DataParsingError(
+      'Invalid values of gameId, ships or indexPlayer'
+    );
+  }
+
+  return obj as IRandomAttackData;
+};
+
+export {
+  parseRawData,
+  getRegData,
+  getIdxRoomFromReq,
+  getAddShipsData,
+  getAttackData,
+  getRandomAttackData,
+};

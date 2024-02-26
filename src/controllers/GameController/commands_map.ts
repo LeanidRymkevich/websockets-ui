@@ -1,13 +1,16 @@
 import EGameRoomReqTypes from '@src/types/enums/EGameRoomReqTypes';
 import { TypedCommand } from '@src/types/types';
 
-import { addShips } from '@src/controllers/GameController/commands';
+import {
+  addShips,
+  attack,
+  randomAttack,
+} from '@src/controllers/GameController/commands';
 
 const commands: Record<EGameRoomReqTypes, TypedCommand> = {
   [EGameRoomReqTypes.ADD_SHIPS]: addShips,
-  [EGameRoomReqTypes.ATTACK]: () => console.log(EGameRoomReqTypes.ATTACK),
-  [EGameRoomReqTypes.RANDOM_ATTACK]: () =>
-    console.log(EGameRoomReqTypes.RANDOM_ATTACK),
+  [EGameRoomReqTypes.ATTACK]: attack,
+  [EGameRoomReqTypes.RANDOM_ATTACK]: randomAttack,
 };
 
 export { commands };

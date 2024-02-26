@@ -1,4 +1,5 @@
 import IAddShipsData from '@src/types/interfaces/IAddShipsData';
+import IAttackResult from '@src/types/interfaces/IAttackResult';
 import IGame from '@src/types/interfaces/IGame';
 import IPlayer from '@src/types/interfaces/IPlayer';
 import { IRegData } from '@src/types/interfaces/IRegData';
@@ -48,6 +49,17 @@ const getStartGameRespData = (data: IAddShipsData): unknown => {
   };
 };
 
+const getAttackRespData = (
+  data: IAttackResult,
+  currentPlayer: string
+): unknown => {
+  return {
+    position: data.position,
+    currentPlayer,
+    status: data.status,
+  };
+};
+
 const getResp = (command: string, data: unknown): string => {
   return JSON.stringify({
     type: command,
@@ -62,5 +74,6 @@ export {
   getCreateGameRespData,
   getFinishGameData,
   getStartGameRespData,
+  getAttackRespData,
   getResp,
 };
