@@ -11,6 +11,8 @@ import {
   getCreateGameRespData,
   getFinishGameData,
   getFinishGameResp,
+  getStartGameResp,
+  getStartGameRespData,
 } from '@src/utils/response_builder';
 import { reportOperationRes } from '@src/utils/console_printer';
 
@@ -44,4 +46,17 @@ const finishGame = (game: IGame): void => {
   game.secondPlayer.getSocket().send(response);
 };
 
-export { createGame, finishGame };
+const startGame = (game: IGame): void => {
+  const firstPlayerData = getStartGameRespData(game.getFirstPlayerShipsInfo()!);
+  const secondPlayerData = getStartGameRespData(
+    game.getSecondPlayerShipsInfo()!
+  );
+
+  reportOperationRes(EGameRoomRespTypes.START_GAME, firstPlayerData);
+  reportOperationRes(EGameRoomRespTypes.START_GAME, secondPlayerData);
+
+  game.firstPlayer.getSocket().send(getStartGameResp(firstPlayerData));
+  game.secondPlayer.getSocket().send(getStartGameResp(secondPlayerData));
+};
+
+export { createGame, finishGame, startGame };

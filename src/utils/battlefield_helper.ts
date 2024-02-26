@@ -1,9 +1,9 @@
-import IAddShipsData from '@src/types/interfaces/IAddShipsData';
+import { AttackStatus } from '@src/types/types';
 import IAttackResult from '@src/types/interfaces/IAttackResult';
 import ICoordinate from '@src/types/interfaces/ICoordinates';
-import { AttackStatus } from '@src/types/types';
+import IShipPosition from '@src/types/interfaces/IShipPosition';
 
-const getShipsLocation = ({ ships }: IAddShipsData): ICoordinate[][] => {
+const getShipsLocation = (ships: IShipPosition[]): ICoordinate[][] => {
   const result: ICoordinate[][] = [];
 
   for (const ship of ships) {
