@@ -13,6 +13,7 @@ import ICommonController from '@src/types/interfaces/ICommonController';
 import IRoomsStorage from '@src/types/interfaces/IRoomsStorage';
 import ICustomDB from '@src/types/interfaces/ICustomDB';
 import IRoom from '@src/types/interfaces/IRoom';
+import ERoomEvent from '@src/types/enums/ERoomEvent';
 
 import CustomDB from '@src/data/CustomDB';
 import { getIdxRoomFromReq, getRegData } from '@src/utils/data_parser';
@@ -129,6 +130,10 @@ const addUserToRoom = (
   }
 
   room.addPlayer(player);
+  room.on(ERoomEvent.CLOSE, (): void =>
+    commonController.execute(ECommonRespTypes.UPDATE_WINNERS, socketMap)
+  );
+
   player.enterRoom(room);
   commonController.execute(ECommonRespTypes.UPDATE_ROOM, socketMap);
 };

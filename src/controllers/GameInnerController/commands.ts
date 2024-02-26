@@ -1,12 +1,16 @@
 import IGame from '@src/types/interfaces/IGame';
 import IGamesStorage from '@src/types/interfaces/IGamesStorage';
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
+import IPlayer from '@src/types/interfaces/IPlayer';
+import IWinnersStorage from '@src/types/interfaces/IWinnersStorage';
 
 import CustomDB from '@src/data/CustomDB';
 
 import {
   getCreateGameResp,
   getCreateGameRespData,
+  getFinishGameData,
+  getFinishGameResp,
 } from '@src/utils/response_builder';
 import { reportOperationRes } from '@src/utils/console_printer';
 
@@ -23,4 +27,21 @@ const createGame = (game: IGame): void => {
   game.secondPlayer.getSocket().send(getCreateGameResp(secondPlayerData));
 };
 
-export { createGame };
+const finishGame = (game: IGame): void => {
+  const winner: IPlayer | null = game.getWinner();
+  const storage: IWinnersStorage = CustomDB.getInstance().winnersStorage;
+
+  if (!winner)
+    throw new Error(`Failed to resolve game with id ${game.gameId} winner!`);
+
+  storage.addWinner(winner);
+
+  const data: unknown = getFinishGameData(winner);
+  const response: string = getFinishGameResp(data);
+
+  reportOperationRes(EGameRoomRespTypes.FINISH, data);
+  game.firstPlayer.getSocket().send(response);
+  game.secondPlayer.getSocket().send(response);
+};
+
+export { createGame, finishGame };

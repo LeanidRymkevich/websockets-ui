@@ -1,7 +1,10 @@
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
 import { GameInnerCommand } from '@src/types/types';
 
-import { createGame } from '@src/controllers/GameInnerController/commands';
+import {
+  createGame,
+  finishGame,
+} from '@src/controllers/GameInnerController/commands';
 
 const commands: Record<EGameRoomRespTypes, GameInnerCommand> = {
   [EGameRoomRespTypes.CREATE_GAME]: createGame,
@@ -9,7 +12,7 @@ const commands: Record<EGameRoomRespTypes, GameInnerCommand> = {
     console.log(EGameRoomRespTypes.START_GAME),
   [EGameRoomRespTypes.ATTACK]: () => console.log(EGameRoomRespTypes.ATTACK),
   [EGameRoomRespTypes.TURN]: () => console.log(EGameRoomRespTypes.TURN),
-  [EGameRoomRespTypes.FINISH]: () => console.log(EGameRoomRespTypes.FINISH),
+  [EGameRoomRespTypes.FINISH]: finishGame,
 };
 
 export { commands };
