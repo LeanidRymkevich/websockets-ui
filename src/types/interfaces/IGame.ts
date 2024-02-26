@@ -12,6 +12,7 @@ export default interface IGame extends EventEmitter {
   getWinner: () => IPlayer | null;
   getFirstPlayerShipsInfo: () => IAddShipsData | null;
   getSecondPlayerShipsInfo: () => IAddShipsData | null;
+  getIsFirstPlayerTurn: () => boolean;
 
   setPlayerLayout: (info: IAddShipsData) => ICoordinate[][];
 }

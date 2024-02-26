@@ -5,13 +5,14 @@ import {
   createGame,
   finishGame,
   startGame,
+  turn,
 } from '@src/controllers/GameInnerController/commands';
 
 const commands: Record<EGameRoomRespTypes, GameInnerCommand> = {
   [EGameRoomRespTypes.CREATE_GAME]: createGame,
   [EGameRoomRespTypes.START_GAME]: startGame,
   [EGameRoomRespTypes.ATTACK]: () => console.log(EGameRoomRespTypes.ATTACK),
-  [EGameRoomRespTypes.TURN]: () => console.log(EGameRoomRespTypes.TURN),
+  [EGameRoomRespTypes.TURN]: () => turn,
   [EGameRoomRespTypes.FINISH]: finishGame,
 };
 

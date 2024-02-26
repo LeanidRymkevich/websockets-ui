@@ -65,4 +65,21 @@ const startGame = (game: IGame): void => {
     .send(getResp(EGameRoomRespTypes.START_GAME, secondPlayerData));
 };
 
-export { createGame, finishGame, startGame };
+const turn = (game: IGame): void => {
+  let currentPlayerId: string;
+
+  if (game.getIsFirstPlayerTurn()) {
+    currentPlayerId = game.firstPlayer.index;
+  } else {
+    currentPlayerId = game.secondPlayer.index;
+  }
+
+  const data = { currentPlayerId };
+
+  reportOperationRes(EGameRoomRespTypes.TURN, data);
+
+  game.firstPlayer.getSocket().send(getResp(EGameRoomRespTypes.TURN, data));
+  game.secondPlayer.getSocket().send(getResp(EGameRoomRespTypes.TURN, data));
+};
+
+export { createGame, finishGame, startGame, turn };

@@ -11,17 +11,22 @@ import IAddShipsData from '@src/types/interfaces/IAddShipsData';
 
 import GameInnerController from '@src/controllers/GameInnerController';
 import { getShipsLocation } from '@src/utils/battlefield_helper';
+import IGameInnerController from '@src/types/interfaces/IGameInnerController';
 
 export default class Game extends EventEmitter implements IGame {
   public readonly firstPlayer: IPlayer;
   public readonly secondPlayer: IPlayer;
   public readonly gameId: string = randomUUID();
 
+  private readonly controller: IGameInnerController =
+    GameInnerController.getInstance();
+
   private winner: IPlayer | null = null;
   private firstPlayerShipsInfo: IAddShipsData | null = null;
   private secondPlayerShipsInfo: IAddShipsData | null = null;
   private firstPlayerLayout: ICoordinate[][] | null = null;
   private secondPlayerLayout: ICoordinate[][] | null = null;
+  private isFirstPlayerTurn = true;
 
   public constructor(firstPlayer: IPlayer, secondPlayer: IPlayer) {
     super();
@@ -41,6 +46,7 @@ export default class Game extends EventEmitter implements IGame {
     this.firstPlayerShipsInfo;
   public getSecondPlayerShipsInfo = (): IAddShipsData | null =>
     this.secondPlayerShipsInfo;
+  public getIsFirstPlayerTurn = (): boolean => this.isFirstPlayerTurn;
 
   public setPlayerLayout = (info: IAddShipsData): ICoordinate[][] => {
     const { indexPlayer, ships } = info;
@@ -57,17 +63,15 @@ export default class Game extends EventEmitter implements IGame {
     }
 
     if (this.firstPlayerLayout && this.secondPlayerLayout) {
-      GameInnerController.getInstance().execute(
-        EGameRoomRespTypes.START_GAME,
-        this
-      );
+      this.controller.execute(EGameRoomRespTypes.START_GAME, this);
+      this.controller.execute(EGameRoomRespTypes.TURN, this);
     }
 
     return layout;
   };
 
   private finish = (): void => {
-    GameInnerController.getInstance().execute(EGameRoomRespTypes.FINISH, this);
+    this.controller.execute(EGameRoomRespTypes.FINISH, this);
     this.emit(EGameEvents.FINISH, this);
   };
 
