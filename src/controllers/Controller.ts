@@ -6,7 +6,7 @@ import ITypedController from '@src/types/interfaces/ITypedController';
 import IData from '@src/types/interfaces/IData';
 
 import PersonalController from '@src/controllers/PersonalController';
-import GameRoomController from '@src/controllers/GameRoomController';
+import GameController from '@src/controllers/GameController';
 
 import { parseRawData } from '@src/utils/data_parser';
 import { extractErrorMsg } from '@src/utils/error_util';
@@ -17,7 +17,7 @@ export default class Controller implements IController {
 
   private readonly commands: Record<EReqTypes, ITypedController> = {
     [EReqTypes.PERSONAL]: new PersonalController(),
-    [EReqTypes.GAME_ROOM]: new GameRoomController(),
+    [EReqTypes.GAME_ROOM]: new GameController(),
   };
 
   private constructor() {}

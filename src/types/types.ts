@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 
 import IData from '@src/types/interfaces/IData';
 import IPlayer from '@src/types/interfaces/IPlayer';
+import IGame from './interfaces/IGame';
 
 type IPlayerParams = Pick<IPlayer, 'name' | 'password'> & {
   socket: WebSocket;
@@ -16,4 +17,6 @@ type TypedCommand = (
 
 type CommonCommand = (socketMap: Record<string, WebSocket>) => void;
 
-export { IPlayerParams, TypedCommand, CommonCommand };
+type GameInnerCommand = (game: IGame) => void;
+
+export { IPlayerParams, TypedCommand, CommonCommand, GameInnerCommand };
