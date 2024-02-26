@@ -12,5 +12,11 @@ Thumbs.db
 *.PEM
 .vscode/
 
-# Logs
-npm-debug.log
+# build folder
+build/
+
+#package-lock.json
+package-lock.json
+
+#.env
+.env
