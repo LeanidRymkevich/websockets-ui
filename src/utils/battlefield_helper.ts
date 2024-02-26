@@ -2,9 +2,12 @@ import { AttackStatus } from '@src/types/types';
 import IAttackResult from '@src/types/interfaces/IAttackResult';
 import ICoordinate from '@src/types/interfaces/ICoordinates';
 import IShipPosition from '@src/types/interfaces/IShipPosition';
+import IShip from '@src/types/interfaces/IShip';
 
-const getShipsLocation = (ships: IShipPosition[]): ICoordinate[][] => {
-  const result: ICoordinate[][] = [];
+import Ship from '@src/models/Ship';
+
+const getShipsLocation = (ships: IShipPosition[]): IShip[] => {
+  const result: IShip[] = [];
 
   for (const ship of ships) {
     const positions: ICoordinate[] = [];
@@ -12,7 +15,7 @@ const getShipsLocation = (ships: IShipPosition[]): ICoordinate[][] => {
     positions.push(position);
 
     if (length <= 1) {
-      result.push(positions);
+      result.push(new Ship(positions));
       continue;
     }
 
@@ -23,41 +26,33 @@ const getShipsLocation = (ships: IShipPosition[]): ICoordinate[][] => {
         positions.push({ x: position.x + i, y: position.y });
       }
     }
-    result.push(positions);
+    result.push(new Ship(positions));
   }
 
   return result;
 };
 
-const estimateShoot = (
-  coord: ICoordinate,
-  locations: ICoordinate[][]
-): IAttackResult => {
-  const newLocations: ICoordinate[][] = [];
+const estimateShoot = (coord: ICoordinate, ships: IShip[]): IAttackResult => {
+  const newShips: IShip[] = ships;
   let status: AttackStatus = 'miss';
+  let killedShip: IShip | null = null;
 
-  for (const location of locations) {
-    const newLocation: ICoordinate[] = location.filter(
-      (position: ICoordinate): boolean => {
-        const { x, y } = position;
-        if (x === coord.x && y === coord.y) return false;
-        return true;
-      }
-    );
+  for (let i = 0; i < ships.length; i++) {
+    const ship: IShip = ships[i]!;
 
-    if (location.length !== newLocation.length) {
-      status = newLocation.length ? 'shot' : 'killed';
-      if (status === 'shot') newLocations.push(newLocation);
-      continue;
+    status = ship.checkShootCons(coord);
+    if (status === 'shot') break;
+    if (status === 'killed') {
+      newShips.splice(i, 1);
+      killedShip = ship;
     }
-
-    newLocations.push(newLocation);
   }
 
   return {
     position: coord,
     status,
-    newLocations,
+    newShips,
+    killedShip,
   };
 };
 

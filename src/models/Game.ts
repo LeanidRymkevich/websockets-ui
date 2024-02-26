@@ -6,11 +6,13 @@ import IPlayer from '@src/types/interfaces/IPlayer';
 import EGameEvents from '@src/types/enums/EGameEvents';
 import EPlayerEvents from '@src/types/enums/EPlayerEvents';
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
-import ICoordinate from '@src/types/interfaces/ICoordinates';
 import IAddShipsData from '@src/types/interfaces/IAddShipsData';
+import IShip from '@src/types/interfaces/IShip';
+import ICoordinate from '@src/types/interfaces/ICoordinates';
+import IAttackResult from '@src/types/interfaces/IAttackResult';
 
 import GameInnerController from '@src/controllers/GameInnerController';
-import { getShipsLocation } from '@src/utils/battlefield_helper';
+import { estimateShoot, getShipsLocation } from '@src/utils/battlefield_helper';
 import IGameInnerController from '@src/types/interfaces/IGameInnerController';
 
 export default class Game extends EventEmitter implements IGame {
@@ -24,9 +26,10 @@ export default class Game extends EventEmitter implements IGame {
   private winner: IPlayer | null = null;
   private firstPlayerShipsInfo: IAddShipsData | null = null;
   private secondPlayerShipsInfo: IAddShipsData | null = null;
-  private firstPlayerLayout: ICoordinate[][] | null = null;
-  private secondPlayerLayout: ICoordinate[][] | null = null;
+  private firstRemainShip: IShip[] | null = null;
+  private secondRemainShip: IShip[] | null = null;
   private isFirstPlayerTurn = true;
+  private lastAttackRes: IAttackResult | null = null;
 
   public constructor(firstPlayer: IPlayer, secondPlayer: IPlayer) {
     super();
@@ -47,22 +50,23 @@ export default class Game extends EventEmitter implements IGame {
   public getSecondPlayerShipsInfo = (): IAddShipsData | null =>
     this.secondPlayerShipsInfo;
   public getIsFirstPlayerTurn = (): boolean => this.isFirstPlayerTurn;
+  public getLastAttackRes = (): IAttackResult | null => this.lastAttackRes;
 
-  public setPlayerLayout = (info: IAddShipsData): ICoordinate[][] => {
+  public setPlayerLayout = (info: IAddShipsData): IShip[] => {
     const { indexPlayer, ships } = info;
-    const layout: ICoordinate[][] = getShipsLocation(ships);
+    const layout: IShip[] = getShipsLocation(ships);
 
     if (indexPlayer === this.firstPlayer.index) {
-      this.firstPlayerLayout = layout;
+      this.firstRemainShip = layout;
       this.firstPlayerShipsInfo = info;
     } else if (indexPlayer === this.secondPlayer.index) {
-      this.secondPlayerLayout = layout;
+      this.secondRemainShip = layout;
       this.secondPlayerShipsInfo = info;
     } else {
       throw new Error('No user in game with provided id');
     }
 
-    if (this.firstPlayerLayout && this.secondPlayerLayout) {
+    if (this.firstRemainShip && this.secondRemainShip) {
       this.controller.execute(EGameRoomRespTypes.START_GAME, this);
       this.controller.execute(EGameRoomRespTypes.TURN, this);
     }
@@ -70,15 +74,52 @@ export default class Game extends EventEmitter implements IGame {
     return layout;
   };
 
+  public attack = (coord: ICoordinate): void => {
+    let ships: IShip[];
+
+    if (this.isFirstPlayerTurn) {
+      ships = this.secondRemainShip!;
+    } else {
+      ships = this.firstRemainShip!;
+    }
+
+    this.lastAttackRes = estimateShoot(coord, ships);
+
+    if (this.isFirstPlayerTurn) {
+      this.secondRemainShip = this.lastAttackRes.newShips;
+    } else {
+      this.firstRemainShip = this.lastAttackRes.newShips;
+    }
+
+    if (this.lastAttackRes.status === 'miss') {
+      this.isFirstPlayerTurn = false;
+    } else if (this.lastAttackRes.status === 'shot') {
+      this.isFirstPlayerTurn = true;
+    } else {
+      this.isFirstPlayerTurn = true;
+    }
+
+    if (!this.firstRemainShip!.length) {
+      this.winner = this.secondPlayer;
+      this.finish();
+    }
+
+    if (!this.secondRemainShip!.length) {
+      this.winner = this.firstPlayer;
+      this.finish();
+    }
+  };
+
   private finish = (): void => {
     this.controller.execute(EGameRoomRespTypes.FINISH, this);
+    this.firstPlayer.removeAllListeners();
+    this.secondPlayer.removeAllListeners();
     this.emit(EGameEvents.FINISH, this);
   };
 
   private onPlayerLeave = (player: IPlayer): void => {
     this.winner =
       player === this.firstPlayer ? this.secondPlayer : this.firstPlayer;
-    this.winner.removeAllListeners();
     this.finish();
   };
 }

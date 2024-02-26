@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 
 import IData from '@src/types/interfaces/IData';
 import IPlayer from '@src/types/interfaces/IPlayer';
-import IGame from './interfaces/IGame';
+import IGame from '@src/types/interfaces/IGame';
 
 type IPlayerParams = Pick<IPlayer, 'name' | 'password'> & {
   socket: WebSocket;

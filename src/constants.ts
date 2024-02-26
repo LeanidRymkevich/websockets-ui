@@ -8,4 +8,7 @@ const httpServerPort: number =
 const wsServerPort: number =
   Number(process.env.WS_SERVER_PORT) || DEFAULT_WS_SERVER_PORT;
 
-export { httpServerPort, wsServerPort };
+const MIN_SELL_NUM = 0;
+const MAX_SELL_NUM = 9;
+
+export { httpServerPort, wsServerPort, MIN_SELL_NUM, MAX_SELL_NUM };
