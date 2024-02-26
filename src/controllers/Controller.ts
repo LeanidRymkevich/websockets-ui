@@ -1,7 +1,7 @@
 import WebSocket, { RawData } from 'ws';
 
 import IController from '@src/types/interfaces/IController';
-import ERespType from '@src/types/enums/ERespTypes';
+import EReqTypes from '@src/types/enums/EReqTypes';
 import ITypedController from '@src/types/interfaces/ITypedController';
 import IData from '@src/types/interfaces/IData';
 
@@ -15,9 +15,9 @@ import { reportOperationRes } from '@src/utils/console_printer';
 export default class Controller implements IController {
   private static readonly instance: IController = new Controller();
 
-  private readonly commands: Record<ERespType, ITypedController> = {
-    [ERespType.PERSONAL]: new PersonalController(),
-    [ERespType.GAME_ROOM]: new GameRoomController(),
+  private readonly commands: Record<EReqTypes, ITypedController> = {
+    [EReqTypes.PERSONAL]: new PersonalController(),
+    [EReqTypes.GAME_ROOM]: new GameRoomController(),
   };
 
   private constructor() {}
@@ -38,7 +38,7 @@ export default class Controller implements IController {
       if (!controllerName)
         throw new Error(`Command type '${parsedData.type}' doesn't exists!`);
 
-      this.commands[controllerName as ERespType].execute(
+      this.commands[controllerName as EReqTypes].execute(
         parsedData,
         socketMap,
         socketId
@@ -60,7 +60,7 @@ export default class Controller implements IController {
 
   private findCommand = (commandName: string): string | undefined => {
     return Object.keys(this.commands).find((key: string): boolean =>
-      this.commands[key as ERespType].haveCommand(commandName)
+      this.commands[key as EReqTypes].haveCommand(commandName)
     );
   };
 }

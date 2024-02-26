@@ -1,6 +1,6 @@
-enum ERespType {
+enum EReqTypes {
   PERSONAL = 'personal',
   GAME_ROOM = 'game room',
 }
 
-export default ERespType;
+export default EReqTypes;
