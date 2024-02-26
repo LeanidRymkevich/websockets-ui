@@ -21,10 +21,13 @@ type GameInnerCommand = (game: IGame) => void;
 
 type ShipSize = 'small' | 'medium' | 'large' | 'huge';
 
+type AttackStatus = 'miss' | 'killed' | 'shot';
+
 export {
   IPlayerParams,
   TypedCommand,
   CommonCommand,
   GameInnerCommand,
   ShipSize,
+  AttackStatus,
 };
