@@ -32,8 +32,12 @@ export default class Player extends EventEmitter implements IPlayer {
   public getRoom = (): IRoom | null => this.room;
 
   public changeSocketId = (id: string): string => (this.socketId = id);
-  public changeSocket = (socket: WebSocket): WebSocket =>
-    (this.socket = socket);
+  public changeSocket = (socket: WebSocket): WebSocket => {
+    this.socket = socket;
+    this.socket.on('error', this.leave);
+    this.socket.on('close', this.leave);
+    return this.socket;
+  };
 
   public enterRoom = (room: IRoom): IRoom => {
     this.room = room;

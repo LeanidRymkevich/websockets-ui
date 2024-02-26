@@ -39,6 +39,7 @@ export default class Game extends EventEmitter implements IGame {
   private onPlayerLeave = (player: IPlayer): void => {
     this.winner =
       player === this.firstPlayer ? this.secondPlayer : this.firstPlayer;
+    this.winner.removeAllListeners();
     this.finish();
   };
 }
