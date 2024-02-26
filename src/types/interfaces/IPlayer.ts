@@ -15,6 +15,4 @@ export default interface IPlayer extends IRegData, EventEmitter {
   changeSocket: (socket: WebSocket) => WebSocket;
 
   enterRoom: (room: IRoom) => IRoom;
-
-  leave: () => boolean;
 }

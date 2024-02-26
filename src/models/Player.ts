@@ -22,6 +22,9 @@ export default class Player extends EventEmitter implements IPlayer {
     this.password = params.password;
     this.socketId = params.socketId;
     this.socket = params.socket;
+
+    this.socket.on('error', this.leave);
+    this.socket.on('close', this.leave);
   }
 
   public getSocketId = (): string => this.socketId;
@@ -42,5 +45,5 @@ export default class Player extends EventEmitter implements IPlayer {
     return room;
   };
 
-  public leave = (): boolean => this.emit(EPlayerEvents.LEAVE, this);
+  private leave = (): boolean => this.emit(EPlayerEvents.LEAVE, this);
 }

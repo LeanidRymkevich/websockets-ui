@@ -38,9 +38,6 @@ const registerPlayer = (
     regData = getRegData(data);
     player = storage.addPlayer({ ...regData, socket, socketId });
 
-    socket.on('close', player.leave);
-    socket.on('error', player.leave);
-
     const response = {
       type: EPersonalRespTypes.REGISTRATION,
       data: JSON.stringify({

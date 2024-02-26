@@ -11,6 +11,4 @@ export default interface IRoom extends EventEmitter {
   getGame: () => IGame | null;
 
   addPlayer: (player: IPlayer) => IPlayer;
-
-  close: () => boolean;
 }

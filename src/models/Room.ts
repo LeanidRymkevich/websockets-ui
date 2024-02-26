@@ -6,6 +6,7 @@ import ERoomEvent from '@src/types/enums/ERoomEvent';
 import EPlayerEvents from '@src/types/enums/EPlayerEvents';
 import IGame from '@src/types/interfaces/IGame';
 import EGameRoomRespTypes from '@src/types/enums/EGameRoomRespTypes';
+import EGameEvents from '@src/types/enums/EGameEvents';
 
 import Game from '@src/models/Game';
 import GameInnerController from '@src/controllers/GameInnerController';
@@ -46,7 +47,7 @@ export default class Room extends EventEmitter implements IRoom {
     return player;
   };
 
-  public close = (): boolean => this.emit(ERoomEvent.CLOSE, this);
+  private close = (): boolean => this.emit(ERoomEvent.CLOSE, this);
 
   private onRoomFill = (): void => {
     const game: IGame = new Game(this.firstPlayer!, this.secondPlayer!);
@@ -56,5 +57,7 @@ export default class Room extends EventEmitter implements IRoom {
       game
     );
     this.game = game;
+
+    this.game.on(EGameEvents.FINISH, this.close);
   };
 }
