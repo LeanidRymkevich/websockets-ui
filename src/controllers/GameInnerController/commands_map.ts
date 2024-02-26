@@ -12,7 +12,7 @@ const commands: Record<EGameRoomRespTypes, GameInnerCommand> = {
   [EGameRoomRespTypes.CREATE_GAME]: createGame,
   [EGameRoomRespTypes.START_GAME]: startGame,
   [EGameRoomRespTypes.ATTACK]: () => console.log(EGameRoomRespTypes.ATTACK),
-  [EGameRoomRespTypes.TURN]: () => turn,
+  [EGameRoomRespTypes.TURN]: turn,
   [EGameRoomRespTypes.FINISH]: finishGame,
 };
 
