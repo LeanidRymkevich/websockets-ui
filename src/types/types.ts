@@ -19,4 +19,12 @@ type CommonCommand = (socketMap: Record<string, WebSocket>) => void;
 
 type GameInnerCommand = (game: IGame) => void;
 
-export { IPlayerParams, TypedCommand, CommonCommand, GameInnerCommand };
+type ShipSize = 'small' | 'medium' | 'large' | 'huge';
+
+export {
+  IPlayerParams,
+  TypedCommand,
+  CommonCommand,
+  GameInnerCommand,
+  ShipSize,
+};
